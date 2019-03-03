@@ -1,0 +1,9 @@
+kind: pipeline
+name: default
+
+steps:
+- name: tests
+  image: colthreepv/node-chrome#8
+  commands:
+  - npm install
+  - npm test
