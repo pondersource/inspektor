@@ -1,9 +1,13 @@
 kind: pipeline
-name: default
+name: test
 
 steps:
-- name: tests
-  image: colthreepv/node-chrome:8
-  commands:
-  - npm install
-  - npm test
+  - name: test
+    image: colthreepv/node-chrome:8
+    commands:
+      - npm install
+      - npm test
+    resources:
+      limits:
+        cpu: 500m
+        memory: 500Mi
