@@ -4,8 +4,11 @@ Inspektor is a simple file browser for inspecting the contents of a
 [remoteStorage](https://remotestorage.io) account. It is intended for RS app
 developers and power users.
 
-Inspektor is beta software and currently under development. You're invited to
-contribute and/or give feedback: https://gitlab.com/skddc/inspektor
+You're invited to contribute to this app and/or submit feedback to improve it. Please use the
+[RS Discourse forums](https://community.remotestorage.io/t/rs-inspektor-a-simple-remotestorage-file-browser/428)
+to post issues or ideas, and/or to request an account for gitea.kosmos.org
+if you want to submit pull requests directly to the upstream repository. You
+may also submit Git patches via [e-mail](mailto:raucao@kip.pe).
 
 ## Features
 
@@ -19,7 +22,7 @@ contribute and/or give feedback: https://gitlab.com/skddc/inspektor
 * [x] Edit JSON content in tree view
 * [x] Delete directories
 * [ ] Edit content source
-* [ ] Render other types content (e.g. audio and video)
+* [ ] Render other types of content (e.g. audio and video)
 * [ ] Copy/move documents
 * [ ] Copy/move directories (and enclosed files)
 * [ ] Loading indicator for any view change that loads remote data
