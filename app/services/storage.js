@@ -114,6 +114,25 @@ export default Service.extend({
     });
   },
 
+  async fetchMedia(path, type) {
+    // remoteStorage.js can decode binary responses as text when the provider
+    // omits the legacy charset=binary marker. Read the original bytes instead.
+    const client = this.get('client');
+    const remote = this.get('rs.remote');
+    const url = await client.getItemURL(path);
+    if (!url || !remote.token || new URL(url).origin !== new URL(remote.href).origin) {
+      throw new Error('No authenticated media URL');
+    }
+
+    const response = await fetch(url, {
+      headers: { Authorization: `Bearer ${remote.token}` }
+    });
+    if (!response.ok) {
+      throw new Error(`File request failed (${response.status})`);
+    }
+    return new Blob([await response.arrayBuffer()], { type });
+  },
+
   fetchListing(path) {
     let items = [];
 

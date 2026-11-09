@@ -45,7 +45,7 @@ export default Component.extend({
     return !this.get('isBinary');
   }.property('isBinary'),
 
-  didReceiveAttrs() {
+  async didReceiveAttrs() {
     this._super(...arguments);
     const path = this.get('metaData.path');
     if (!path || this.previewPath === path) { return; }
@@ -58,21 +58,25 @@ export default Component.extend({
       return;
     }
 
-    this.get('storage.client').getFile(path).then(file => {
+    try {
+      const storage = this.get('storage');
+      const isMedia = this.get('isMedia');
+      const file = isMedia
+        ? await storage.fetchMedia(path, this.get('type'))
+        : await storage.get('client').getFile(path);
       if (this.isDestroying || this.previewPath !== path) { return; }
-      if (this.get('isMedia')) {
-        const blob = new window.Blob([file.data], { type: this.get('type') });
-        this.set('objectURL', window.URL.createObjectURL(blob));
+      if (isMedia) {
+        this.set('objectURL', window.URL.createObjectURL(file));
       } else {
         this.set('fileContent', file.data);
       }
 
       this.set('fileLoaded', true);
-    }).catch(error => {
+    } catch (error) {
       if (this.isDestroying || this.previewPath !== path) { return; }
       this.set('loadFailed', true);
       console.error(error);
-    });
+    }
   },
 
   revokeObjectURL() {
