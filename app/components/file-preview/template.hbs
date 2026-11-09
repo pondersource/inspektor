@@ -1,6 +1,6 @@
 {{#if fileLoaded}}
   {{#if isBinary}}
-    {{#if isUnkownBinary}}
+    {{#if isUnknownBinary}}
       <p>No preview available for this content type.</p>
     {{/if}}
     {{#if isImage}}
@@ -40,4 +40,8 @@
       </button>
     </div>
   {{/if}}
+{{else if loadFailed}}
+  <p>Could not load the file.</p>
+{{else}}
+  <p>Loading file…</p>
 {{/if}}

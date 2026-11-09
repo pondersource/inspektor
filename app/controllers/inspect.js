@@ -30,15 +30,7 @@ export default Controller.extend({
   jsonShowTree: computed.equal('jsonView', 'tree'),
   jsonShowSource: computed.equal('jsonView', 'source'),
 
-  publicItemURL: computed('model.documentMetaData.path', function(){
-    let path = this.get('model.documentMetaData.path');
-
-    if (path.match(/public\//)) {
-      return this.get('storage.client').getItemURL(path);
-    } else {
-      return null;
-    }
-  }),
+  publicItemURL: alias('model.publicItemURL'),
 
   metadataHidden: false,
 
@@ -49,6 +41,7 @@ export default Controller.extend({
     },
 
     showJsonSource () {
+      this.set('documentShowEditor', false);
       this.set('jsonView', 'source');
     },
 
@@ -71,7 +64,7 @@ export default Controller.extend({
             .remove(this.get('path')).then(() => {
               this.transitionToRoute('index', {
                 queryParams: {
-                  path: this.get('currentDirPath')
+                  path: this.get('currentDirPath') || null
                 }
               });
             });

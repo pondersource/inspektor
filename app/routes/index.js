@@ -1,8 +1,7 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { isEmpty, isPresent } from '@ember/utils';
-import { later } from '@ember/runloop';
-import { hash, Promise } from 'rsvp';
+import { hash } from 'rsvp';
 
 export default Route.extend({
 
@@ -15,7 +14,7 @@ export default Route.extend({
   },
 
   beforeModel() {
-    return this.waitForConnectionState().then(() => {
+    return this.get('storage').waitForConnectionState().then(() => {
       if (this.get('storage.disconnected')) {
         this.transitionTo('connect');
       }
@@ -37,35 +36,19 @@ export default Route.extend({
 
   setupController(controller, model) {
     this._super(controller, model);
+    controller.set('currentDirPath', model ? model.currentDirPath : null);
 
     if (isEmpty(this.get('storage.categories')) && this.get('storage.connected')) {
       this.get('storage').fetchRootListing();
     }
 
     if (isPresent(model)) {
-      controller.set('currentDirPath', model.currentDirPath);
-
       if (isEmpty(model.currentListing)) {
         this.transitionTo('index', {
           queryParams: { path: controller.get('parentDir') }
         });
       }
     }
-  },
-
-  waitForConnectionState() {
-    let self = this;
-
-    return new Promise(resolve => {
-      function checkConnectingDone() {
-        if (self.get('storage.connecting')) {
-          later(checkConnectingDone, 20);
-        } else {
-          resolve();
-        }
-      }
-      checkConnectingDone();
-    });
   }
 
 });

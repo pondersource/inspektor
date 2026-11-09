@@ -1,22 +1,20 @@
-import { moduleForComponent, test } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import Service from '@ember/service';
+import { render } from '@ember/test-helpers';
+import { setupRenderingTest } from 'ember-qunit';
+import { hbs } from 'ember-cli-htmlbars';
+import { module, test } from 'qunit';
 
-moduleForComponent('file-preview', 'Integration | Component | file preview', {
-  integration: true
-});
+module('Integration | Component | file preview', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-  this.set('metaData', {
-    etag: "714148227",
-    isBinary: false,
-    isFolder: false,
-    name: "fra-pdx",
-    path: "trips/2018/06/19/fra-pdx",
-    size: 92086791,
-    type: "application/json"
+  test('it loads and renders text', async function(assert) {
+    this.owner.register('service:storage', Service.extend({
+      client: { getFile: async () => ({ data: 'preview fixture' }) }
+    }));
+    this.set('metaData', { path: 'example.txt', type: 'text/plain', isBinary: false });
+
+    await render(hbs`{{file-preview metaData=this.metaData}}`);
+
+    assert.equal(this.element.querySelector('code').textContent, 'preview fixture');
   });
-
-  this.render(hbs`{{file-preview metaData=metaData}}`);
-
-  assert.equal(this.$().text().trim(), '');
 });

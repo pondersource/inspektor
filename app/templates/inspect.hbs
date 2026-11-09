@@ -13,7 +13,7 @@
       </button>
     {{/if}}
     {{#if publicItemURL}}
-      <a class="button" href={{publicItemURL}} target="_blank"
+      <a class="button" href={{publicItemURL}} target="_blank" rel="noopener"
          title="Open document in new tab">
           {{partial "icons/share"}}
       </a>
@@ -35,6 +35,7 @@
       </div>
     {{/if}}
     {{#if documentIsEditable}}
+      {{#if jsonShowTree}}
       <div class="button-group editable">
         <button disabled={{documentHideEditor}}
                 class="{{if documentHideEditor "active"}}"
@@ -44,10 +45,12 @@
         </button>
         <button disabled={{documentShowEditor}}
                 class="{{if documentShowEditor "active"}}"
+                title="Edit JSON"
                 {{action "showEditor"}}>
           {{partial "icons/edit"}}
         </button>
       </div>
+      {{/if}}
     {{/if}}
     <button class="delete" title="Delete"
             {{action "deleteItem"}}>{{partial "icons/trash"}}</button>
@@ -58,7 +61,6 @@
   <section class="content">
     {{file-preview metaData=model.documentMetaData
                    isJSON=documentIsJSON
-                   isEditable=documentIsEditableHide
                    showEditor=documentShowEditor
                    jsonShowTree=jsonShowTree
                    jsonShowSource=jsonShowSource}}

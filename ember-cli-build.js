@@ -2,10 +2,16 @@
 'use strict';
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app');
+const { ProvidePlugin } = require('webpack');
 
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
-    // Add options here
+    autoImport: {
+      webpack: {
+        // The JSON tree editor uses Node's util API via its browser polyfill.
+        plugins: [new ProvidePlugin({ process: 'process/browser' })]
+      }
+    }
   });
 
   // Use `app.import` to add additional libraries to the generated

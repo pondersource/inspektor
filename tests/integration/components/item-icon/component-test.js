@@ -1,5 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
+import { hbs } from 'ember-cli-htmlbars';
 
 moduleForComponent('item-icon', 'Integration | Component | item icon', {
   integration: true

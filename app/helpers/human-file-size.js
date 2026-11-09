@@ -1,6 +1,10 @@
 import { helper } from '@ember/component/helper';
 
-export default helper(function(fileSizeInBytes/*, options*/) {
+export default helper(function([fileSizeInBytes]) {
+  if (fileSizeInBytes == null) {
+    return 'Unknown';
+  }
+
   if (fileSizeInBytes < 1024) {
     return `${fileSizeInBytes} bytes`;
   }

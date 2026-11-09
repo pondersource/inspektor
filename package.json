@@ -3,13 +3,13 @@
   "version": "0.9.0",
   "private": true,
   "description": "Inspect the contents of your remote storage",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "author": "",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "gitlab:skddc/inspektor",
+  "repository": "https://github.com/pondersource/inspektor",
   "scripts": {
     "build": "ember build",
     "build-prod": "ember build --environment production && npm run update-version-file",
@@ -19,35 +19,37 @@
     "update-version-file": "bash scripts/update-version-file.sh"
   },
   "devDependencies": {
-    "broccoli-asset-rev": "^2.4.5",
-    "ember-ajax": "^3.0.0",
-    "ember-body-class": "^0.4.0",
-    "ember-browserify": "^1.2.0",
-    "ember-cli": "~2.16.2",
-    "ember-cli-app-version": "^3.0.0",
-    "ember-cli-babel": "^6.6.0",
-    "ember-cli-bourbon": "github:yapplabs/ember-cli-bourbon#v2.0.0-beta.1",
-    "ember-cli-dependency-checker": "^2.0.0",
-    "ember-cli-eslint": "^4.0.0",
-    "ember-cli-htmlbars": "^2.0.1",
-    "ember-cli-htmlbars-inline-precompile": "^1.0.0",
-    "ember-cli-inject-live-reload": "^1.4.1",
-    "ember-cli-qunit": "^4.0.0",
-    "ember-cli-sass": "^7.0.0",
-    "ember-cli-shims": "^1.1.0",
-    "ember-cli-sri": "^2.1.0",
-    "ember-cli-uglify": "^2.0.0",
-    "ember-data": "~2.16.2",
-    "ember-export-application-global": "^2.0.0",
-    "ember-load-initializers": "^1.0.0",
-    "ember-resolver": "^4.0.0",
-    "ember-source": "~2.16.0",
-    "json-tree-view": "github:skddc/json-tree-view#bugfix/setters",
-    "loader.js": "^4.2.3",
-    "remotestorage-widget": "^1.3.0",
-    "remotestoragejs": "^1.1.0"
+    "@ember/jquery": "^1.1.0",
+    "broccoli-asset-rev": "^3.0.0",
+    "ember-auto-import": "^2.13.1",
+    "ember-body-class": "^1.1.4",
+    "ember-cli": "~3.28.6",
+    "ember-cli-app-version": "^3.2.0",
+    "ember-cli-babel": "^8.3.2",
+    "ember-cli-dependency-checker": "^3.2.0",
+    "ember-cli-htmlbars": "^4.2.0",
+    "ember-cli-inject-live-reload": "^2.0.1",
+    "ember-cli-sass": "^11.0.1",
+    "ember-cli-sri": "^2.1.1",
+    "ember-cli-terser": "^4.0.2",
+    "ember-export-application-global": "^2.0.1",
+    "ember-load-initializers": "^2.1.1",
+    "ember-qunit": "^4.6.0",
+    "ember-resolver": "^7.0.0",
+    "ember-source": "~3.28.12",
+    "jquery": "^3.7.1",
+    "loader.js": "^4.7.0",
+    "sass": "^1.107.1",
+    "webpack": "^5.112.2"
   },
   "engines": {
-    "node": "6.* || >= 7.*"
+    "node": "^22.12.0"
+  },
+  "dependencies": {
+    "json-tree-view": "https://codeload.github.com/skddc/json-tree-view/tar.gz/55cb3b866083bf99e1895481fb73cf9186154c5e",
+    "process": "^0.11.10",
+    "remotestorage-widget": "^1.8.1",
+    "remotestoragejs": "^2.0.0-beta.10",
+    "util": "^0.12.5"
   }
 }

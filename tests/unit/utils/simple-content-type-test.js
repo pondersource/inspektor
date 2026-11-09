@@ -9,3 +9,8 @@ test('it removes the charset portion', function(assert) {
 
   assert.equal(result, 'application/json');
 });
+
+test('it uses a generic file type when metadata is absent', function(assert) {
+  assert.equal(simpleContentType(undefined), 'application/octet-stream');
+  assert.equal(simpleContentType(''), 'application/octet-stream');
+});

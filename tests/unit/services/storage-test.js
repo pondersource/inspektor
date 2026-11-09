@@ -5,8 +5,16 @@ moduleFor('service:storage', 'Unit | Service | storage', {
   // needs: ['service:foo']
 });
 
-// Replace this with your real tests.
-test('it exists', function(assert) {
-  let service = this.subject();
-  assert.ok(service);
+test('missing content type does not turn a file into a folder', async function(assert) {
+  const service = this.subject();
+  service.set('client', {
+    getListing: async () => ({ 'subfolder/': true, 'empty-file': { 'Content-Length': 0 } })
+  });
+
+  const [folder, file] = await service.fetchListing('category/');
+
+  assert.true(folder.isFolder);
+  assert.false(file.isFolder);
+  assert.equal(file.type, 'application/octet-stream');
+  assert.equal(file.size, 0);
 });

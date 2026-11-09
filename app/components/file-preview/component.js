@@ -1,9 +1,9 @@
 import Component from '@ember/component';
 import { inject as service } from '@ember/service';
-import { observer } from '@ember/object';
-import { alias, none, not } from '@ember/object/computed';
+import { computed, observer } from '@ember/object';
+import { alias, not, or } from '@ember/object/computed';
 import { scheduleOnce } from '@ember/runloop';
-import JSONTreeView from 'npm:json-tree-view';
+import JSONTreeView from 'json-tree-view';
 
 export default Component.extend({
 
@@ -24,7 +24,10 @@ export default Component.extend({
   type: alias('metaData.type'),
   isBinary: alias('metaData.isBinary'),
 
-  isUnknownBinary: none('isImage', 'isAudio', 'isVideo'),
+  isMedia: or('isImage', 'isAudio', 'isVideo'),
+  isUnknownBinary: computed('isBinary', 'isMedia', function() {
+    return this.get('isBinary') && !this.get('isMedia');
+  }),
 
   isImage: function() {
     return this.get('type').match(/^image\/.+$/);
@@ -42,31 +45,48 @@ export default Component.extend({
     return !this.get('isBinary');
   }.property('isBinary'),
 
-  loadFile: function() {
-    let path = this.get('metaData.path');
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const path = this.get('metaData.path');
+    if (!path || this.previewPath === path) { return; }
 
-    if (this.get('isAudio') || this.get('isVideo')) {
+    this.previewPath = path;
+    this.revokeObjectURL();
+    this.setProperties({ fileLoaded: false, fileContent: null, loadFailed: false });
+    if (this.get('isUnknownBinary')) {
       this.set('fileLoaded', true);
-      this.set('objectURL', this.get('storage.client')
-                                .getItemURL(path));
       return;
     }
 
-    // TODO don't fetch is size above certain limit
-
-    console.debug(`[file-preview] Loading file ${this.get('metaData.name')}`)
     this.get('storage.client').getFile(path).then(file => {
-      if (this.get('isImage')) {
-        let view = new window.Uint8Array(file.data);
-        let blob = new window.Blob([view], { type: file.contentType });
+      if (this.isDestroying || this.previewPath !== path) { return; }
+      if (this.get('isMedia')) {
+        const blob = new window.Blob([file.data], { type: this.get('type') });
         this.set('objectURL', window.URL.createObjectURL(blob));
       } else {
         this.set('fileContent', file.data);
       }
 
       this.set('fileLoaded', true);
+    }).catch(error => {
+      if (this.isDestroying || this.previewPath !== path) { return; }
+      this.set('loadFailed', true);
+      console.error(error);
     });
-  }.on('didInsertElement'),
+  },
+
+  revokeObjectURL() {
+    const url = this.get('objectURL');
+    if (url) {
+      window.URL.revokeObjectURL(url);
+      this.set('objectURL', null);
+    }
+  },
+
+  willDestroyElement() {
+    this.revokeObjectURL();
+    this._super(...arguments);
+  },
 
   onFileLoaded: observer('fileLoaded', function(){
     if (this.get('fileLoaded') && this.get('isJSON') && this.get('jsonShowTree')) {

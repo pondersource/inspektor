@@ -1,5 +1,9 @@
 # RS Inspektor
 
+[Ponder Source deployment](https://inspektor.pondersource.com) ·
+[Upstream repository](https://gitea.kosmos.org/raucao/inspektor) ·
+[AGPL-3.0 license](LICENSE)
+
 Inspektor is a simple file browser for inspecting the contents of a
 [remoteStorage](https://remotestorage.io) account. It is intended for RS app
 developers and power users.
@@ -34,19 +38,18 @@ may also submit Git patches via [e-mail](mailto:raucao@kip.pe).
 You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with NPM)
-* [Ember CLI](https://ember-cli.com/)
+* [Node.js 22](https://nodejs.org/) (with npm)
 * [Google Chrome](https://google.com/chrome/)
 
 ## Installation
 
 * `git clone <repository-url>` this repository
 * `cd inspektor`
-* `npm install`
+* `npm ci`
 
 ## Running / Development
 
-* `ember serve`
+* `npm start`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 * Visit your tests at [http://localhost:4200/tests](http://localhost:4200/tests).
 
@@ -56,24 +59,17 @@ Make use of the many generators for code, try `ember help generate` for more det
 
 ### Running Tests
 
-* `ember test`
-* `ember test --server`
+* `npm test`
+* `npm test -- --server`
 
 ### Building
 
-* `ember build` (development)
-* `ember build --environment production` (production)
+* `npm run build` (development)
+* `npm run build-prod` (production)
 
 ### Deploying
 
-With the 5apps remote added correctly (and push access to the GitLab repo),
-just run:
-
-    npm run deploy
-
-If you want to deploy this from and to different repos, have a look at the
-`scripts` section in `package.json`, as well as `scripts/deploy.sh` for how it
-works.
+GitHub Actions tests and deploys the production build from `master` to GitHub Pages.
 
 ## Further Reading / Useful Links
 

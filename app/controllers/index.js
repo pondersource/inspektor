@@ -45,11 +45,8 @@ export default Controller.extend({
   }),
 
   parentDir: computed('currentDirPath', function () {
-    const dirs = this.get('currentDirPath')
-                     .split('/')
-                     .reject(p => isEmpty(p));
-
-    return dirs.splice(0, dirs.length - 1).join('/') + '/';
+    const path = this.get('currentDirPath') || '';
+    return path.slice(0, path.lastIndexOf('/', path.length - 2) + 1) || null;
   }),
 
   connectedChange: observer('connected', function () {

@@ -12,30 +12,35 @@ export default Route.extend({
     }
   },
 
-  model(params) {
-    let path = params.path;
-
-    if (isEmpty(params.path)) {
-      // TODO redirect to root
+  async beforeModel(transition) {
+    await this.get('storage').waitForConnectionState();
+    if (!this.get('storage.connected')) {
+      return this.transitionTo('index', { queryParams: { path: null } });
     }
-    if (path.substr(-1) === '/') {
-      // TODO redirect to parent dir
+    const path = transition.to.queryParams.path;
+    if (!path || path.endsWith('/')) {
+      return this.transitionTo('index', { queryParams: { path: path || null } });
     }
+  },
 
-    let parentDirPath = path.match(/^(.*\/).+$/)[1];
-    let documentName  = path.match(/^.*\/(.+)$/)[1];
+  async model({ path }) {
+    const split = path.lastIndexOf('/') + 1;
+    const parentDirPath = path.slice(0, split);
+    const listing = await this.get('storage').fetchListing(parentDirPath);
+    const documentMetaData = listing.find(item => item.name === path.slice(split));
+    const publicItemURL = documentMetaData && path.startsWith('public/')
+      ? await this.get('storage.client').getItemURL(path)
+      : null;
 
-    // FIXME do a HEAD request instead of fetching parent listing
-    return this.get('storage').fetchListing(parentDirPath).then(listing => {
-      let metaData = listing.findBy('name', documentName);
-      return metaData;
-    }).then(metaData => {
-      return {
-        documentMetaData: metaData,
-        // documentPublicURL: this.get()
-        currentDirPath: parentDirPath,
-      };
-    });
+    return { documentMetaData, publicItemURL, currentDirPath: parentDirPath };
+  },
+
+  redirect(model) {
+    if (!model.documentMetaData) {
+      return this.transitionTo('index', {
+        queryParams: { path: model.currentDirPath || null }
+      });
+    }
   },
 
   setupController(controller, model) {

@@ -2,8 +2,10 @@ import EmberObject from '@ember/object';
 import Service from '@ember/service';
 import { computed, observer } from '@ember/object';
 import { isEmpty } from '@ember/utils';
-import RemoteStorage from 'npm:remotestoragejs';
-import Widget from 'npm:remotestorage-widget';
+import { later } from '@ember/runloop';
+import { Promise } from 'rsvp';
+import RemoteStorage from 'remotestoragejs';
+import Widget from 'remotestorage-widget';
 import simpleContentType from 'inspektor/utils/simple-content-type';
 
 export default Service.extend({
@@ -99,6 +101,19 @@ export default Service.extend({
     });
   },
 
+  waitForConnectionState() {
+    return new Promise(resolve => {
+      const check = () => {
+        if (this.get('connecting')) {
+          later(check, 20);
+        } else {
+          resolve();
+        }
+      };
+      check();
+    });
+  },
+
   fetchListing(path) {
     let items = [];
 
@@ -106,20 +121,22 @@ export default Service.extend({
       if (isEmpty(listing)) { return []; }
 
       Object.keys(listing).forEach(name => {
-        let item = listing[name];
-        let type = item['Content-Type'] || 'folder';
-        let isBinary = false;
-        if (type !== 'folder') {
-          isBinary = !!type.match(/charset=binary/);
-          type = simpleContentType(type);
-        }
+        const item = listing[name] || {};
+        const isFolder = name.endsWith('/');
+        const contentType = item['Content-Type'];
+        const type = isFolder ? 'folder' : simpleContentType(contentType);
+        const isBinary = !isFolder && (
+          /charset\s*=\s*binary/i.test(contentType) ||
+          /^(image|audio|video)\//i.test(type) ||
+          type === 'application/octet-stream'
+        );
 
         items.push(EmberObject.create({
           name: name,
           type: type,
           isBinary: isBinary,
-          isFolder: type === 'folder',
-          size: item['Content-Length'] || null,
+          isFolder: isFolder,
+          size: item['Content-Length'] ?? null,
           path: path + name,
           etag: item['ETag']
         }));
