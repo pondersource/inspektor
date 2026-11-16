@@ -5,6 +5,8 @@ import { isEmpty } from '@ember/utils';
 import { later } from '@ember/runloop';
 import { Promise } from 'rsvp';
 import RemoteStorage from 'remotestoragejs';
+import storageApiKeys from '../config/storage-providers';
+import { configureProviderRedirects } from '../utils/provider-redirects';
 import Widget from 'remotestorage-widget';
 import simpleContentType from 'inspektor/utils/simple-content-type';
 
@@ -27,10 +29,8 @@ export default Service.extend({
 
     rs.access.claim('*', 'rw');
 
-    // rs.setApiKeys({
-    //   dropbox: config.dropboxAppKey,
-    //   googledrive: config.gdriveClientId
-    // });
+    rs.setApiKeys(storageApiKeys);
+    configureProviderRedirects(rs);
 
     const widget = new Widget(rs, {
       skipInitial: true
@@ -119,6 +119,11 @@ export default Service.extend({
     // omits the legacy charset=binary marker. Read the original bytes instead.
     const client = this.get('client');
     const remote = this.get('rs.remote');
+    if (this.get('rs.backend') !== 'remotestorage') {
+      const file = await client.getFile(path);
+      if (!file) throw new Error('File not found');
+      return new Blob([file.data], { type });
+    }
     const url = await client.getItemURL(path);
     if (!url || !remote.token || new URL(url).origin !== new URL(remote.href).origin) {
       throw new Error('No authenticated media URL');

@@ -28,7 +28,7 @@ export default Route.extend({
     const parentDirPath = path.slice(0, split);
     const listing = await this.get('storage').fetchListing(parentDirPath);
     const documentMetaData = listing.find(item => item.name === path.slice(split));
-    const publicItemURL = documentMetaData && path.startsWith('public/')
+    const publicItemURL = documentMetaData && path.startsWith('public/') && this.get('storage.rs.backend') !== 'googledrive'
       ? await this.get('storage.client').getItemURL(path)
       : null;
 
