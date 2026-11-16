@@ -30,7 +30,7 @@ export default Service.extend({
     rs.access.claim('*', 'rw');
 
     rs.setApiKeys(storageApiKeys);
-    configureProviderRedirects(rs);
+    configureProviderRedirects(rs, '/connect');
 
     const widget = new Widget(rs, {
       skipInitial: true
