@@ -68,7 +68,11 @@ export default Component.extend({
       if (isMedia) {
         this.set('objectURL', window.URL.createObjectURL(file));
       } else {
-        this.set('fileContent', file.data);
+        // Dropbox's rs.js adapter already parses JSON download responses.
+        // Keep the preview's source text consistent with other backends.
+        this.set('fileContent', this.get('isJSON') && typeof file.data !== 'string'
+          ? JSON.stringify(file.data, null, 2)
+          : file.data);
       }
 
       this.set('fileLoaded', true);
@@ -104,13 +108,23 @@ export default Component.extend({
     }
   }),
 
+  didRender() {
+    this._super(...arguments);
+    const container = this.element.querySelector('#json-tree-view');
+    if (this.get('fileLoaded') && this.get('isJSON') && container && !container.firstChild) {
+      scheduleOnce('afterRender', this, 'renderJsonTree');
+    }
+  },
+
   renderJsonTree () {
+    if (this.isDestroying || this.isDestroyed) return;
+    const containerElement = this.element && this.element.querySelector('#json-tree-view');
+    if (!containerElement) return;
     let value = JSON.parse(this.get('fileContent'));
 
     let view = new JSONTreeView('content', value);
     // this.attachJsonTreeEventHandlers(view);
 
-    const containerElement = document.getElementById('json-tree-view');
     containerElement.innerHTML = ''; // Throw away any existing treeviews
     containerElement.appendChild(view.dom);
 

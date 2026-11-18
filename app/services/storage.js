@@ -138,6 +138,19 @@ export default Service.extend({
     return new Blob([await response.arrayBuffer()], { type });
   },
 
+  async resolveDocumentType(metadata) {
+    // Dropbox folder listings omit Content-Type. Its download response can
+    // identify JSON (including extensionless records) even when listing cannot.
+    const file = await this.get('client').getFile(metadata.path);
+    if (!file) return;
+    const type = simpleContentType(file.contentType);
+    metadata.setProperties({
+      type,
+      isBinary: /charset\s*=\s*binary/i.test(file.contentType) ||
+        /^(image|audio|video)\//i.test(type) || type === 'application/octet-stream'
+    });
+  },
+
   fetchListing(path) {
     let items = [];
 

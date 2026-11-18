@@ -1,3 +1,4 @@
+import EmberObject from '@ember/object';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:storage', 'Unit | Service | storage', {
@@ -33,4 +34,25 @@ test('provider media reads use the storage client instead of public links', asyn
   const blob = await service.fetchMedia('pictures/image.png', 'image/png');
   assert.equal(blob.type, 'image/png');
   assert.equal(blob.size, 3);
+});
+
+test('resolves extensionless Dropbox JSON from the downloaded file', async function(assert) {
+  const service = this.subject();
+  const metadata = EmberObject.create({ path: 'bookmarks/archive/id', type: 'application/octet-stream', isBinary: true });
+  service.set('client', { getFile: async path => {
+    assert.equal(path, 'bookmarks/archive/id');
+    return { data: { title: 'fixture' }, contentType: 'application/json; charset=UTF-8' };
+  } });
+  await service.resolveDocumentType(metadata);
+  assert.equal(metadata.type, 'application/json');
+  assert.false(metadata.isBinary);
+});
+
+test('does not guess JSON for unknown binary files', async function(assert) {
+  const service = this.subject();
+  const metadata = EmberObject.create({ path: 'file', type: 'application/octet-stream', isBinary: true });
+  service.set('client', { getFile: async () => ({ data: new ArrayBuffer(4), contentType: 'application/octet-stream' }) });
+  await service.resolveDocumentType(metadata);
+  assert.equal(metadata.type, 'application/octet-stream');
+  assert.true(metadata.isBinary);
 });
