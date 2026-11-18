@@ -49,7 +49,7 @@
     "json-tree-view": "https://codeload.github.com/skddc/json-tree-view/tar.gz/55cb3b866083bf99e1895481fb73cf9186154c5e",
     "process": "^0.11.10",
     "remotestorage-widget": "^1.8.1",
-    "remotestoragejs": "file:vendor/remotestoragejs-2.0.0-beta.10-pondersource.2.tgz",
+    "remotestoragejs": "file:vendor/remotestoragejs-2.0.0-beta.10-pondersource.3.tgz",
     "util": "^0.12.5"
   }
 }
