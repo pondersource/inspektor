@@ -5,7 +5,7 @@ import { isEmpty } from '@ember/utils';
 import { later } from '@ember/runloop';
 import { Promise } from 'rsvp';
 import RemoteStorage from 'remotestoragejs';
-import { inspectionModule, attachSolid } from '@pondersource/rs-apps';
+import { inspectionModule } from '@pondersource/rs-apps';
 import storageApiKeys from '../config/storage-providers';
 import { configureProviderRedirects } from '../utils/provider-redirects';
 import Widget from 'remotestorage-widget';
@@ -30,12 +30,13 @@ export default Service.extend({
 
     rs.addModule(inspectionModule(rs));
     rs.access.claim('*', 'rw');
-    attachSolid(rs);
+
 
     rs.setApiKeys(storageApiKeys);
     configureProviderRedirects(rs, '/connect');
 
     const widget = new Widget(rs, {
+      solidProviders: { allowAnyProvider: true },
       skipInitial: true
     });
 
