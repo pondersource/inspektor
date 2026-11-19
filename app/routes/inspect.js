@@ -31,7 +31,7 @@ export default Route.extend({
     if (documentMetaData && documentMetaData.type === 'application/octet-stream') {
       await this.get('storage').resolveDocumentType(documentMetaData);
     }
-    const publicItemURL = documentMetaData && path.startsWith('public/') && this.get('storage.rs.backend') !== 'googledrive'
+    const publicItemURL = documentMetaData && path.startsWith('public/')
       ? await this.get('storage.client').getItemURL(path)
       : null;
 
