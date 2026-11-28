@@ -48,8 +48,8 @@
   "dependencies": {
     "json-tree-view": "https://codeload.github.com/skddc/json-tree-view/tar.gz/55cb3b866083bf99e1895481fb73cf9186154c5e",
     "process": "^0.11.10",
-    "remotestorage-widget": "file:vendor/remotestorage-widget-1.8.2-pondersource.6-preview.11.tgz",
-    "remotestoragejs": "file:vendor/remotestoragejs-2.0.0-beta.10-pondersource.9-preview.9.tgz",
+    "remotestorage-widget": "file:vendor/remotestorage-widget-1.8.2-pondersource.6-atomic.1.tgz",
+    "remotestoragejs": "file:vendor/remotestoragejs-2.0.0-beta.10-pondersource.10-atomic.1.tgz",
     "util": "^0.12.5",
     "@pondersource/rs-apps": "file:vendor/pondersource-rs-apps-1.0.0.tgz"
   }

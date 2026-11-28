@@ -24,6 +24,7 @@ export default Service.extend({
   rootListing: null,
 
   setup: function() {
+    RemoteStorage.Atomic.loadSDK = window.loadPonderSourceAtomicSDK;
     const rs = new RemoteStorage({
       cache: false
     });
