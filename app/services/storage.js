@@ -24,7 +24,7 @@ export default Service.extend({
   rootListing: null,
 
   setup: function() {
-    RemoteStorage.Atomic.loadSDK = () => import(/* webpackIgnore: true */ /* @vite-ignore */ new URL('atomic-sdk/index.mjs', document.baseURI).href);
+    RemoteStorage.Atomic.loadSDK = window.loadPonderSourceAtomicSDK;
     const rs = new RemoteStorage({
       cache: false
     });
